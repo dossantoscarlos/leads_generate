@@ -1,34 +1,46 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { LeadsService } from './leads.service';
-import { CreateLeadDto } from './dto/create-lead.dto';
-import { UpdateLeadDto } from './dto/update-lead.dto';
+import { Lead } from './entities/lead.entity';
 
 @Controller('leads')
 export class LeadsController {
-  constructor(private readonly leadsService: LeadsService) {}
+  constructor(private readonly leadsService: LeadsService) { }
 
   @Post()
-  create(@Body() createLeadDto: CreateLeadDto) {
-    return this.leadsService.create(createLeadDto);
+  create(@Body() createLead: Lead) {
+    return this.leadsService.createLead(createLead);
   }
 
   @Get()
   findAll() {
-    return this.leadsService.findAll();
+    return this.leadsService.leads({});
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.leadsService.findOne(+id);
+    const idLead = +id;
+    return this.leadsService.lead({ id: idLead });
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateLeadDto: UpdateLeadDto) {
-    return this.leadsService.update(+id, updateLeadDto);
+  update(@Param('id') id: string, @Body() updateLead: Lead) {
+    const idLead = +id;
+    return this.leadsService.updateLead({
+      where: { id: idLead },
+      data: updateLead,
+    });
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.leadsService.remove(+id);
+    return this.leadsService.deleteLead({ id: +id });
   }
 }

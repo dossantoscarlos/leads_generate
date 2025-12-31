@@ -10,5 +10,17 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
+}
+
+model Lead {
+  id        Int    @id @default(autoincrement())
+  firstname String
+  lastname  String
+  zipcode   String
+  street    String
+  city      String
+  state     String
+  phone     String
+  email     String
 }

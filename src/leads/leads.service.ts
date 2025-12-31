@@ -1,26 +1,56 @@
 import { Injectable } from '@nestjs/common';
-import { CreateLeadDto } from './dto/create-lead.dto';
-import { UpdateLeadDto } from './dto/update-lead.dto';
+import { PrismaService } from '../prisma.service';
+import { Lead, Prisma } from '../../generated/prisma/client';
 
 @Injectable()
 export class LeadsService {
-  create(createLeadDto: CreateLeadDto) {
-    return 'This action adds a new lead';
+  constructor(private prisma: PrismaService) {}
+
+  async lead(
+    leadWhereUniqueInput: Prisma.LeadWhereUniqueInput,
+  ): Promise<Lead | null> {
+    return this.prisma.lead.findUnique({
+      where: leadWhereUniqueInput,
+    });
   }
 
-  findAll() {
-    return `This action returns all leads`;
+  async leads(params: {
+    skip?: number;
+    take?: number;
+    cursor?: Prisma.LeadWhereUniqueInput;
+    where?: Prisma.LeadWhereInput;
+    orderBy?: Prisma.LeadOrderByWithRelationInput;
+  }): Promise<Lead[]> {
+    const { skip, take, cursor, where, orderBy } = params;
+    return this.prisma.lead.findMany({
+      skip,
+      take,
+      cursor,
+      where,
+      orderBy,
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} lead`;
+  async createLead(data: Prisma.LeadCreateInput): Promise<Lead> {
+    return this.prisma.lead.create({
+      data,
+    });
   }
 
-  update(id: number, updateLeadDto: UpdateLeadDto) {
-    return `This action updates a #${id} lead`;
+  async updateLead(params: {
+    where: Prisma.LeadWhereUniqueInput;
+    data: Prisma.LeadUpdateInput;
+  }): Promise<Lead> {
+    const { where, data } = params;
+    return this.prisma.lead.update({
+      data,
+      where,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} lead`;
+  async deleteLead(where: Prisma.LeadWhereUniqueInput): Promise<Lead> {
+    return this.prisma.lead.delete({
+      where,
+    });
   }
 }
